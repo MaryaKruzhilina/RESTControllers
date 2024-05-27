@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.timeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/add_user/add}" th:object="${user}">
+    <input type="text" placeholder="Имя" th:field="*{name}">
+    <input type="text" placeholder="Фамилия" th:field="*{lastname}">
+    <input type="text" placeholder="Email" th:field="*{email}">
+    <input type="text" value="" placeholder="Возраст" th:field="*{age}">
+    <br/>
+    <input type="submit" value="Сохранить">
+
+</form>
+</body>
+</html>
