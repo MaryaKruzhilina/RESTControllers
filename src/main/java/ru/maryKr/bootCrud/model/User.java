@@ -1,6 +1,7 @@
 package ru.maryKr.bootCrud.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "users")
@@ -8,12 +9,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotEmpty(message = "Введите пароль")
+    private String password;
+    @NotEmpty(message = "Введите имя")
     private String name;
     private String lastname;
     private String email;
     private String age;
 
     public User(String name, String lastname, String email, String age) {
+        this.password = password;
         this.name = name;
         this.lastname = lastname;
         this.email = email;
@@ -21,6 +26,14 @@ public class User {
     }
 
     public User() {
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public long getId() {
