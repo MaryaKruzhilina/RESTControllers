@@ -22,8 +22,12 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/welcome", "/").permitAll().requestMatchers("/**").authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/welcome", "/").permitAll()
+                        .requestMatchers("/**").authenticated())
+                .formLogin(from -> from.successHandler(successUserHandler));
         return http.build();
     }
 
