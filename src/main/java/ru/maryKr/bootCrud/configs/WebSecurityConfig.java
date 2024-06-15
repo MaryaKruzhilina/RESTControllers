@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractAu
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -22,12 +23,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
+        http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/welcome", "/").permitAll()
-                        .requestMatchers("/**").authenticated())
-                .formLogin(from -> from.successHandler(successUserHandler));
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .r
+                        .anyRequest().authenticated())
+                .formLogin(formLogin -> formLogin.loginPage("/login").successHandler(successUserHandler).permitAll())
+                .logout(logout -> logout.permitAll());
         return http.build();
     }
 
