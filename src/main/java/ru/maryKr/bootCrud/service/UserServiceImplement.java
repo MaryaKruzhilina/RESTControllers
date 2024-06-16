@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maryKr.bootCrud.dao.UserDAO;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.repositiry.UserRepository;
 
 import java.util.List;
 
@@ -12,9 +13,15 @@ public class UserServiceImplement implements UserService {
 
     private final UserDAO userDAO;
 
-    public UserServiceImplement(UserDAO userDAO){
+    private final UserRepository userRepository;
+
+    public UserServiceImplement(UserDAO userDAO, UserRepository userRepository){
+        this.userRepository = userRepository;
         this.userDAO = userDAO;
     }
+//    public User findUserByUsername(String username){
+//        return userRepository.findByUsername(username);
+//    }
 
     @Transactional
     @Override
