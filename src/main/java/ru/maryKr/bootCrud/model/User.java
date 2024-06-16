@@ -22,7 +22,7 @@ public class User implements UserDetails {
     private String password;
 
     @NotEmpty(message = "Введите имя")
-    private String name;
+    private String username;
 
     @ManyToMany(fetch = FetchType.LAZY)
     Set<Role> roles = new HashSet<>();
@@ -36,7 +36,7 @@ public class User implements UserDetails {
 
     public User(String name, String lastname, String email, String age) {
         this.password = password;
-        this.name = name;
+        this.username = name;
         this.lastname = lastname;
         this.email = email;
         this.age = age;
@@ -53,7 +53,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     public String getPassword() {
@@ -73,11 +73,11 @@ public class User implements UserDetails {
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.username = name;
     }
 
     public String getLastname() {
@@ -107,7 +107,7 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "name='" + username + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +

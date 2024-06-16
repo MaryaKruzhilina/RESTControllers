@@ -19,9 +19,9 @@ public class UserServiceImplement implements UserService {
         this.userRepository = userRepository;
         this.userDAO = userDAO;
     }
-//    public User findUserByUsername(String username){
-//        return userRepository.findByUsername(username);
-//    }
+    public User findUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 
     @Transactional
     @Override
