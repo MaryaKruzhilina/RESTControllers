@@ -4,7 +4,9 @@ package ru.maryKr.bootCrud.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.model.UserRole;
 
 import java.util.List;
 @Repository

@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +23,7 @@ public class User implements UserDetails {
     @NotEmpty(message = "Введите имя")
     private String username;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     Set<Role> roles = new HashSet<>();
 
     private String lastname;
@@ -33,14 +32,6 @@ public class User implements UserDetails {
 
     private String age;
 
-
-    public User(String name, String lastname, String email, String age) {
-        this.password = password;
-        this.username = name;
-        this.lastname = lastname;
-        this.email = email;
-        this.age = age;
-    }
 
     public User() {
     }
@@ -54,6 +45,14 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public String getPassword() {

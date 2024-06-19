@@ -3,16 +3,14 @@ package ru.maryKr.bootCrud.model;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private UserRole name;
+    private UserRole userName;
 
 //    @ManyToMany(mappedBy = "roles")
 //    private Set<User> user = new HashSet<>();
@@ -21,8 +19,8 @@ public class Role implements GrantedAuthority {
         ;
     }
 
-    public Role(UserRole name) {
-        this.name = name;
+    public Role(UserRole userName) {
+        this.userName = userName;
     }
 
     public int getId() {
@@ -41,12 +39,17 @@ public class Role implements GrantedAuthority {
 //        this.user = user;
 //    }
 
-    public UserRole getRole() {
-        return name;
+
+    public UserRole getUserName() {
+        return userName;
+    }
+
+    public void setUserName(UserRole name) {
+        this.userName = name;
     }
 
     @Override
     public String getAuthority() {
-        return name.toString();
+        return userName.name();
     }
 }

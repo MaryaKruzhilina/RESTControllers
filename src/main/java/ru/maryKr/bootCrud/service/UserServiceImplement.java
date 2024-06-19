@@ -3,10 +3,13 @@ package ru.maryKr.bootCrud.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.maryKr.bootCrud.dao.UserDAO;
+import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.repositiry.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImplement implements UserService {
@@ -26,7 +29,7 @@ public class UserServiceImplement implements UserService {
     @Transactional
     @Override
     public void addUser(User user) {
-        userDAO.addUser(user);
+        userRepository.save(user);
     }
 
     @Transactional

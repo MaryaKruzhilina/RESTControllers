@@ -6,12 +6,21 @@
     <title>Title</title>
 </head>
 <body>
+
 <form th:method="POST" th:action="@{/add_user/add}" th:object="${user}">
     <input type="text" placeholder="Имя" th:field="*{name}">
     <input type="text" placeholder="Пароль" th:field="*{password}">
     <input type="text" placeholder="Фамилия" th:field="*{lastname}">
     <input type="text" placeholder="Email" th:field="*{email}">
     <input type="text" value="" placeholder="Возраст" th:field="*{age}">
+
+    <div>
+        <h3>Роли</h3>
+        <div th:each="role : ${userRoles}">
+            <input type="checkbox" th:name="uRoles" th:value = "${role}" th:text="${role.name()}" >
+        </div>
+    </div>
+
     <br/>
     <input type="submit" value="Сохранить">
 
