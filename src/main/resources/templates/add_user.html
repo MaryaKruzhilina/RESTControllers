@@ -9,7 +9,9 @@
 
 <form th:method="POST" th:action="@{/add_user/add}" th:object="${user}">
     <input type="text" placeholder="Имя" th:field="*{name}">
+    <div th:if="${error}" th:text="${error}"></div>
     <input type="text" placeholder="Пароль" th:field="*{password}">
+    <div th:if="${noLoginPassword}" th:text="${noLoginPassword}"></div>
     <input type="text" placeholder="Фамилия" th:field="*{lastname}">
     <input type="text" placeholder="Email" th:field="*{email}">
     <input type="text" value="" placeholder="Возраст" th:field="*{age}">
@@ -20,7 +22,7 @@
             <input type="checkbox" th:name="uRoles" th:value = "${role}" th:text="${role.name()}" >
         </div>
     </div>
-
+    <div th:if="${notRolesError}" th:text="${notRolesError}"></div>
     <br/>
     <input type="submit" value="Сохранить">
 

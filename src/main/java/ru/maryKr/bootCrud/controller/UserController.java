@@ -9,11 +9,9 @@ import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.service.UserService;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -65,7 +63,9 @@ public class UserController {
         return "add_user";
     }
     @PostMapping("/add_user/add")
-    public String addNewUser(@ModelAttribute("user") User user, @RequestParam("uRoles") String[] userRoles) {
+    public String addNewUser(@ModelAttribute("user") User user,
+                             @RequestParam(name = "uRoles", required = false) String[] userRoles, ModelMap model) {
+
         Set<Role> roles = new HashSet<>();
         if(userRoles != null) {
             for(String ur : userRoles) {
@@ -75,11 +75,28 @@ public class UserController {
                 roles.add(role);
             }
         }
+        if(roles.isEmpty()) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("notRolesError", "Выберите роль");
+            return "add_user";
+        }
 
         user.setRoles(roles);
+
+        if(user.getUsername().isEmpty() || user.getPassword().isEmpty() || service.isUsernameUnique(user.getUsername())) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            if(user.getUsername().isEmpty()|| user.getPassword().isEmpty()) {
+                model.addAttribute("noLoginPassword", "Заполните имя пользователя и пароль");
+            } else {
+                model.addAttribute("error", "Имя пользователя занято");
+            }
+            return "add_user";
+        }
+
         service.addUser(user);
         return "redirect:/table";
     }
-
 
 }

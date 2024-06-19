@@ -26,6 +26,11 @@ public class UserServiceImplement implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public boolean isUsernameUnique(String username){
+        return findUserByUsername(username) != null;
+    }
+
     @Transactional
     @Override
     public void addUser(User user) {
