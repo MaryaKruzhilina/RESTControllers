@@ -1,15 +1,56 @@
 package ru.maryKr.bootCrud.service;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.maryKr.bootCrud.configs.MyPasswordEncoder;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.repositiry.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface UserService {
-    void addUser(User user);
-    void removeUser(long id);
-    List<User> getUsers();
-    void updateUser(long id, User user);
-    User getUser(long id);
-    public boolean isUsernameUnique(String username);
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+    @Autowired
+    private MyPasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+    public User findByUsername(String username){
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+    }
+    
+    public boolean isUsernameUnique(String username){
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    @Transactional
+    public void addUser(User user) {
+        user.setPassword(passwordEncoder.getPasswordEncoder().encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeUser(long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    public void updateUser(long id, User user) {
+        addUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUser(long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

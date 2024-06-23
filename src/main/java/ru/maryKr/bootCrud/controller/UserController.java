@@ -1,5 +1,8 @@
 package ru.maryKr.bootCrud.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -28,7 +31,15 @@ public class UserController {
         return "/welcome";
     }
 
+    @GetMapping("/user")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String getUserPage(@AuthenticationPrincipal UserDetails userDetails, ModelMap model) {
+        model.addAttribute("user", service.findByUsername(userDetails.getUsername()));
+        return "/user";
+    }
+
     @GetMapping("/table")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public String getTable(ModelMap model) {
         List<User> users = service.getUsers();
         if (users.size() == 0) {
@@ -39,18 +50,58 @@ public class UserController {
         }
     }
     @GetMapping("/update_user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String update(@RequestParam("id") long id, Model model) {
-        System.out.println(id);
         model.addAttribute("user", service.getUser(id));
         model.addAttribute("id", id);
+        model.addAttribute("userRoles", UserRole.values());
         return "update_user";
     }
     @PostMapping("/update_user/update")
-    public String edit(@RequestParam("id") long id, @ModelAttribute User user) {
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String edit(@ModelAttribute User user,
+                       @RequestParam("id") long id,
+                       @RequestParam(name = "uRoles", required = false) String[] userRoles,
+                       ModelMap model) {
+        Set<Role> roles = new HashSet<>();
+        if(userRoles != null) {
+            for(String ur : userRoles) {
+                UserRole urRole = UserRole.valueOf(ur);
+                Role role = new Role();
+                role.setUserName(urRole);
+                roles.add(role);
+            }
+        }
+        if(roles.isEmpty()) {
+            model.addAttribute("user", user);
+            model.addAttribute("id", id);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("notRolesError", "Выберите роль");
+            return "update_user";
+        }
+
+        user.setRoles(roles);
+
+        if(user.getName().isEmpty() || service.isUsernameUnique(user.getName())) {
+            model.addAttribute("user", user);
+            model.addAttribute("id", id);
+            model.addAttribute("userRoles", UserRole.values());
+            if(user.getName().isEmpty()) {
+                model.addAttribute("noLogin", "Заполните имя пользователя");
+            } else {
+                if (user.getId() != service.findByUsername(user.getName()).getId()) {
+                    model.addAttribute("error", "Имя пользователя занято");
+                }
+            }
+            return "update_user";
+        }
+
         service.updateUser(id, user);
         return "redirect:/table";
     }
+
     @GetMapping("/delete")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String edit(@RequestParam("id") long id) {
         System.out.println(id);
         service.removeUser(id);
@@ -84,10 +135,10 @@ public class UserController {
 
         user.setRoles(roles);
 
-        if(user.getUsername().isEmpty() || user.getPassword().isEmpty() || service.isUsernameUnique(user.getUsername())) {
+        if(user.getName().isEmpty() || user.getPassword().isEmpty() || service.isUsernameUnique(user.getName())) {
             model.addAttribute("user", user);
             model.addAttribute("userRoles", UserRole.values());
-            if(user.getUsername().isEmpty()|| user.getPassword().isEmpty()) {
+            if(user.getName().isEmpty()|| user.getPassword().isEmpty()) {
                 model.addAttribute("noLoginPassword", "Заполните имя пользователя и пароль");
             } else {
                 model.addAttribute("error", "Имя пользователя занято");

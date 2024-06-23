@@ -23,7 +23,7 @@ public class User implements UserDetails {
     @NotEmpty(message = "Введите имя")
     private String username;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     Set<Role> roles = new HashSet<>();
 
     private String lastname;
@@ -37,16 +37,6 @@ public class User implements UserDetails {
     }
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -55,6 +45,16 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return getName();
+    }
+    @Override
     public String getPassword() {
         return password;
     }
