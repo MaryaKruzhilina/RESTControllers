@@ -1,31 +1,34 @@
 package ru.maryKr.bootCrud.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import ru.maryKr.bootCrud.configs.MyPasswordEncoder;
 import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.repositiry.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Validated
 public class UserService {
 
     private final UserRepository userRepository;
     @Autowired
     private MyPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public User findByUsername(String username){
+
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
     }
-    
-    public boolean isUsernameUnique(String username){
+
+    public boolean isNotUsernameUnique(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 
@@ -46,7 +49,7 @@ public class UserService {
     }
 
     public void updateUser(long id, User user) {
-        addUser(user);
+       // addUser(user);
     }
 
     @Transactional(readOnly = true)

@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
@@ -51,18 +53,17 @@ public class UserController {
     }
     @GetMapping("/update_user")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String update(@RequestParam("id") long id, Model model) {
+    public String update(@RequestParam(name = "id") Long id, Model model) {
         model.addAttribute("user", service.getUser(id));
-        model.addAttribute("id", id);
         model.addAttribute("userRoles", UserRole.values());
         return "update_user";
     }
+
     @PostMapping("/update_user/update")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String edit(@ModelAttribute User user,
-                       @RequestParam("id") long id,
-                       @RequestParam(name = "uRoles", required = false) String[] userRoles,
-                       ModelMap model) {
+    public String edit(@ModelAttribute("user")@Validated User user,
+                       BindingResult bindingResult,
+                       @RequestParam(name = "uRoles", required = false) String[] userRoles, ModelMap model) {
         Set<Role> roles = new HashSet<>();
         if(userRoles != null) {
             for(String ur : userRoles) {
@@ -72,31 +73,30 @@ public class UserController {
                 roles.add(role);
             }
         }
+        if(service.isNotUsernameUnique(user.getName()) && service.findByUsername(user.getName()).getId() != user.getId()) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("notUnique", "Пользователь с таким именем уже есть в базе");
+            return "update_user";
+        }
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "update_user";
+        }
+
         if(roles.isEmpty()) {
             model.addAttribute("user", user);
-            model.addAttribute("id", id);
             model.addAttribute("userRoles", UserRole.values());
             model.addAttribute("notRolesError", "Выберите роль");
             return "update_user";
         }
 
+
         user.setRoles(roles);
 
-        if(user.getName().isEmpty() || service.isUsernameUnique(user.getName())) {
-            model.addAttribute("user", user);
-            model.addAttribute("id", id);
-            model.addAttribute("userRoles", UserRole.values());
-            if(user.getName().isEmpty()) {
-                model.addAttribute("noLogin", "Заполните имя пользователя");
-            } else {
-                if (user.getId() != service.findByUsername(user.getName()).getId()) {
-                    model.addAttribute("error", "Имя пользователя занято");
-                }
-            }
-            return "update_user";
-        }
-
-        service.updateUser(id, user);
+        service.updateUser(user.getId(), user);
         return "redirect:/table";
     }
 
@@ -114,7 +114,8 @@ public class UserController {
         return "add_user";
     }
     @PostMapping("/add_user/add")
-    public String addNewUser(@ModelAttribute("user") User user,
+    public String addNewUser(@ModelAttribute("user")@Validated User user,
+                             BindingResult bindingResult,
                              @RequestParam(name = "uRoles", required = false) String[] userRoles, ModelMap model) {
 
         Set<Role> roles = new HashSet<>();
@@ -126,26 +127,25 @@ public class UserController {
                 roles.add(role);
             }
         }
+        if(service.isNotUsernameUnique(user.getName())) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("notUnique", "Пользователь с таким именем уже есть в базе");
+            return "add_user";
+        }
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "add_user";
+        }
         if(roles.isEmpty()) {
             model.addAttribute("user", user);
             model.addAttribute("userRoles", UserRole.values());
             model.addAttribute("notRolesError", "Выберите роль");
             return "add_user";
         }
-
         user.setRoles(roles);
-
-        if(user.getName().isEmpty() || user.getPassword().isEmpty() || service.isUsernameUnique(user.getName())) {
-            model.addAttribute("user", user);
-            model.addAttribute("userRoles", UserRole.values());
-            if(user.getName().isEmpty()|| user.getPassword().isEmpty()) {
-                model.addAttribute("noLoginPassword", "Заполните имя пользователя и пароль");
-            } else {
-                model.addAttribute("error", "Имя пользователя занято");
-            }
-            return "add_user";
-        }
-
         service.addUser(user);
         return "redirect:/table";
     }

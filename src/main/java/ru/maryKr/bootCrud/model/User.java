@@ -1,7 +1,10 @@
 package ru.maryKr.bootCrud.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,17 +20,17 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty(message = "Введите пароль")
+    @NotBlank(message = "Введите пароль")
     private String password;
 
-    @NotEmpty(message = "Введите имя")
+    @NotBlank(message = "Введите имя")
     private String username;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     Set<Role> roles = new HashSet<>();
 
     private String lastname;
-
+    @Email(message = "Введите корректный email")
     private String email;
 
     private String age;
