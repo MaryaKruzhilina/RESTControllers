@@ -20,6 +20,9 @@
             <td th:utext="${user.getAge()}"></td>
         </tr>
     </table>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выход</button>
+    </form>
 </div>
 </body>
 </html>

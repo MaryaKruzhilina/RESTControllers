@@ -25,6 +25,9 @@
         </tr>
     </table>
     <a href="/add_user">Создать нового пользователя</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Выход</button>
+    </form>
 </div>
 </body>
 </html>

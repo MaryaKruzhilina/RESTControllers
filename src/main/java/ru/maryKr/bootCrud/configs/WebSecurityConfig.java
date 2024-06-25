@@ -37,7 +37,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/welcome", "/add_user/**", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.successHandler(successUserHandler).permitAll())
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll());
         return http.build();
     }
 
