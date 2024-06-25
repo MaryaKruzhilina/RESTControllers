@@ -48,10 +48,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void updateUser(long id, User user) {
-       // addUser(user);
-    }
-
     @Transactional(readOnly = true)
     public User getUser(long id) {
         return userRepository.findById(id).orElse(null);

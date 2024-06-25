@@ -40,7 +40,7 @@ public class UserController {
         return "/user";
     }
 
-    @GetMapping("/table")
+    @GetMapping("/admin")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public String getTable(ModelMap model) {
         List<User> users = service.getUsers();
@@ -48,7 +48,7 @@ public class UserController {
             return "redirect:/add_user";
         } else {
             model.addAttribute("users_list", users);
-            return "table";
+            return "admin";
         }
     }
     @GetMapping("/update_user")
@@ -96,16 +96,15 @@ public class UserController {
 
         user.setRoles(roles);
 
-        service.updateUser(user.getId(), user);
-        return "redirect:/table";
+        service.addUser(user);
+        return "redirect:/admin";
     }
 
     @GetMapping("/delete")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String edit(@RequestParam("id") long id) {
-        System.out.println(id);
         service.removeUser(id);
-        return "redirect:/table";
+        return "redirect:/admin";
     }
     @GetMapping("/add_user")
     public String addUser(Model model) {
@@ -147,7 +146,7 @@ public class UserController {
         }
         user.setRoles(roles);
         service.addUser(user);
-        return "redirect:/table";
+        return "redirect:/admin";
     }
 
 }

@@ -32,7 +32,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**","/update_user/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/welcome", "/add_user/**", "/").permitAll()
                         .anyRequest().authenticated())
@@ -43,19 +43,6 @@ public class WebSecurityConfig {
                         .permitAll());
         return http.build();
     }
-
-    // аутентификация inMemory
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("user")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
     @Bean
     public UserDetailsService userDetailsService() throws UsernameNotFoundException {
         return username -> {
