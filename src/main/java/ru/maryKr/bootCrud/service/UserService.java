@@ -24,10 +24,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
     }
-
+    @Transactional
     public boolean isNotUsernameUnique(String username) {
         return userRepository.findByUsername(username).isPresent();
     }

@@ -6,7 +6,7 @@
     <title>Title</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/update_user/update}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin/update_user/update}" th:object="${user}">
     <input type="hidden" th:name="id" th:value="*{id}">
     <input type="hidden" th:name="password" th:value="*{password}">
     <div th:if="${errors}">

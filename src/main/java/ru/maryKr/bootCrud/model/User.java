@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @NotBlank(message = "Введите имя")
     private String username;
 
-    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<Role> roles = new HashSet<>();
 
     private String lastname;

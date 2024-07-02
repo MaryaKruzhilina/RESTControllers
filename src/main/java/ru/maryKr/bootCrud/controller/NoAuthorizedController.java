@@ -69,6 +69,6 @@ public class NoAuthorizedController {
         }
         user.setRoles(roles);
         service.addUser(user);
-        return "redirect:/logout";
+        return "redirect:/admin";
     }
 }

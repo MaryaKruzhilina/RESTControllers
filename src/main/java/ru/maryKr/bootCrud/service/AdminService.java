@@ -12,6 +12,7 @@ import ru.maryKr.bootCrud.repositiry.AdminRepository;
 import java.util.List;
 
 @Service
+@Transactional
 @Validated
 public class AdminService {
 
@@ -22,10 +23,11 @@ public class AdminService {
     public AdminService(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
     }
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
     }
-
+    @Transactional
     public boolean isNotUsernameUnique(String username) {
         return adminRepository.findByUsername(username).isPresent();
     }

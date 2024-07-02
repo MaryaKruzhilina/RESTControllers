@@ -3,6 +3,9 @@ package ru.maryKr.bootCrud.model;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
@@ -12,8 +15,8 @@ public class Role implements GrantedAuthority {
 
     private UserRole userName;
 
-//    @ManyToMany(mappedBy = "roles")
-//    private Set<User> user = new HashSet<>();
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
 
     public Role() {
         ;
@@ -31,13 +34,13 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-//    public Set<User> getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(Set<User> user) {
-//        this.user = user;
-//    }
+    public Set<User> getUser() {
+        return users;
+    }
+
+    public void setUser(Set<User> users) {
+        this.users = users;
+    }
 
 
     public UserRole getUserName() {
