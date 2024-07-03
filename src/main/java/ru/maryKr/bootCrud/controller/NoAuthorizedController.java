@@ -10,6 +10,7 @@ import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.service.AdminService;
+import ru.maryKr.bootCrud.service.AdminServiceImpl;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class NoAuthorizedController {
 
     private final AdminService service;
 
-    public NoAuthorizedController(AdminService service) {
+    public NoAuthorizedController(AdminServiceImpl service) {
         this.service = service;
     }
 

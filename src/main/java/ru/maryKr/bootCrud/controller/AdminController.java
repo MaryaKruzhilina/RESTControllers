@@ -11,6 +11,7 @@ import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.service.AdminService;
+import ru.maryKr.bootCrud.service.AdminServiceImpl;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +22,7 @@ public class AdminController {
 
     private final AdminService service;
 
-    public AdminController(AdminService service) {
+    public AdminController(AdminServiceImpl service) {
         this.service = service;
     }
 

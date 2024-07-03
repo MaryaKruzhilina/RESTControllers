@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.maryKr.bootCrud.model.User;
-import ru.maryKr.bootCrud.service.UserService;
+import ru.maryKr.bootCrud.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +21,7 @@ public class WebSecurityConfig {
     private final MyPasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserService service;
+    private UserServiceImpl service;
 
 
     public WebSecurityConfig(SuccessUserHandler successUserHandler, MyPasswordEncoder passwordEncoder) {
@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .formLogin(formLogin -> formLogin.successHandler(successUserHandler).permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                         .permitAll());
         return http.build();
     }
