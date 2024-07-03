@@ -33,7 +33,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/index/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/welcome", "/add_user/**", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.successHandler(successUserHandler).permitAll())

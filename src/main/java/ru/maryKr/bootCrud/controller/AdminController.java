@@ -43,7 +43,7 @@ public class AdminController {
             for(String ur : userRoles) {
                 UserRole urRole = UserRole.valueOf(ur);
                 Role role = new Role();
-                role.setUserName(urRole);
+                role.setUserRole(urRole);
                 roles.add(role);
             }
         }

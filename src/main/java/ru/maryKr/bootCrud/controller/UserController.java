@@ -19,11 +19,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/user")
+    @GetMapping("/index")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String getUserPage(@AuthenticationPrincipal UserDetails userDetails, ModelMap model) {
         model.addAttribute("user", service.findByUsername(userDetails.getUsername()));
-        return "/user";
+        return "/index";
     }
 
 
