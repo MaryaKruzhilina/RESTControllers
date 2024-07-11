@@ -1,4 +1,6 @@
 <!doctype html>
+<html xmlns:th="http://www.timeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -37,7 +39,8 @@
             <div class="navbar-brand p-4" th:object="${user}">
                 <span style="font-weight: bold" th:text="${user.getEmail}">example@mail.ru</span>
                 <span> with roles: </span>
-                <span th:each="role: ${user.getRoles()}" th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
+                <span th:each="role: ${user.getRoles()}"
+                      th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
                     example_User
                 </span>
             </div>
@@ -49,15 +52,22 @@
         </div>
     </nav>
 </header>
+
 <div class="container-fluid" style="margin-top: 15px;">
     <div class="row">
-        <div class="col-3 sidebar">
-            <button type="button" class="btn btn-outline-primary w-100 text-start" style="border: none;"
-                    data-target="#adminModal">Admin</button>
-            <button type="button" class="btn btn-outline-primary w-100 text-start" style="border: none;"
-                    data-target="#userModal">User</button>
+        <div class="col-2 sidebar">
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <button type="button" class="btn btn-outline-primary w-100 text-start" style="border: none;"
+                        data-target="#adminModal">Admin
+                </button>
+            </div>
+            <div sec:authorize="hasRole('ROLE_USER')">
+                <button type="button" class="btn btn-outline-primary w-100 text-start" style="border: none;"
+                        data-target="#userModal">User
+                </button>
+            </div>
         </div>
-        <div class="col-9">
+        <div class="col-10">
             <div id="adminModal" class="content">
                 <h1>Admin panel</h1>
 
@@ -151,7 +161,7 @@
                                 </div>
                                 <div>
                                     <label for="inputRole" class="form-label">Role</label>
-                                    <select class="form-select" size="2" multiple aria-label="multiple select example">
+                                    <select class="form-select" size="2" multiple aria-label="multiple select example" id="inputRole">
                                         <div th:each="role : ${userRoles}">
                                             <option th:name="uRoles" th:value="${role}" th:text="${role.name()}">User</option>
                                         </div>
@@ -162,12 +172,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="new-user" role="tabpanel" aria-labelledby="new-user-tab">
-                    <h5 class="p-6">All users</h5>
-                </div>
             </div>
 
-            <div id="userModal" class="content">
+            <div id="userModal" class="content" >
                 <h1>User information-page</h1>
 
                 <div style="border: 1px solid #dee2e6;">
@@ -187,23 +194,50 @@
                             </thead>
                             <tbody>
                             <tr class="align-middle">
-                                <th scope="row" style=" font-weight:500;">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>31</td>
-                                <td> @mdo</td>
-                                <td>Admin User</td>
+                                <td th:text="${user.getId}">1</td>
+                                <td th:text="${user.getUsername}">Mark</td>
+                                <td th:text="${user.getLastname}">Otto</td>
+                                <td th:text="${user.getAge}">31</td>
+                                <td th:text="${user.getEmail}"> @mdo</td>
+                                <td>
+                                    <span th:each="role: ${user.getRoles()}"
+                                          th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
+                                    </span>
+                                </td>
                             </tr>
                             </tbody>
-                        </table></div>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        integrity=" sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var buttons = document.querySelectorAll('button[data-target]');
+        buttons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var target = button.getAttribute('data-target');
+                var contentSections = document.querySelectorAll('.content');
+                contentSections.forEach(function (section) {
+                    section.style.display = 'none';
+                });
+                var targetSection = document.querySelector(target);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

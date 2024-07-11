@@ -28,6 +28,7 @@ public class User implements UserDetails {
     Set<Role> roles = new HashSet<>();
 
     private String lastname;
+
     @Email(message = "Введите корректный email")
     private String email;
 
