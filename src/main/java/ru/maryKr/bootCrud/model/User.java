@@ -30,12 +30,29 @@ public class User implements UserDetails {
     private String lastname;
 
     @Email(message = "Введите корректный email")
+    @NotBlank
     private String email;
 
-    private String age;
+    private int age;
 
 
     public User() {
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
 
@@ -45,20 +62,6 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getUsername() {
-        return getName();
-    }
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -97,11 +100,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 

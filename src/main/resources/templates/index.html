@@ -37,7 +37,7 @@
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" style="height: 60px">
         <div class="container-fluid">
             <div class="navbar-brand p-4" th:object="${user}">
-                <span style="font-weight: bold" th:text="${user.getEmail}">example@mail.ru</span>
+                <span style="font-weight: bold" th:text="${user.getEmail()}">example@mail.ru</span>
                 <span> with roles: </span>
                 <span th:each="role: ${user.getRoles()}"
                       th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
@@ -99,29 +99,17 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr class="align-middle">
-                                <th scope="row" style=" font-weight:500;">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>31</td>
-                                <td> @mdo</td>
-                                <td>Admin User</td>
+                            <tr class="align-middle" th:each="user : ${users_list}">
+                                <td th:utext="${user.getId()}">1</td>
+                                <td th:utext="${user.getUsername()}">Mark</td>
+                                <td th:utext="${user.getLastname()}">Otto</td>
+                                <td th:utext="${user.getAge()}">31</td>
+                                <td th:utext="${user.getEmail()}"> @mdo</td>
                                 <td>
-                                    <button type="button" class="btn btn-info"
-                                            style="padding-right: 12px; padding-left: 12px; color:aliceblue;" data-target="#">Edit</button>
+                                    <span th:each="role: ${user.getRoles()}"
+                                          th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
+                                    </span>
                                 </td>
-                                <td>
-                                    <button type="button" class="btn btn-danger" style="padding-right: 12px; padding-left: 12px;"
-                                            data-target="#">Delete</button>
-                                </td>
-                            </tr>
-                            <tr class="align-middle">
-                                <th scope="row" style=" font-weight:500;">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>31</td>
-                                <td> @mdo</td>
-                                <td>User</td>
                                 <td>
                                     <button type="button" class="btn btn-info"
                                             style="padding-right: 12px; padding-left: 12px; color:aliceblue;" data-target="#">Edit</button>
@@ -137,35 +125,55 @@
                     <div class="tab-pane fade" id="new-user" role="tabpanel" aria-labelledby="new-user-tab">
                         <h5 class="p-6">Add new user</h5>
                         <div class="container" style="text-align: center; margin: 0 auto; width: 30%; font-weight: bold">
-                            <form th:method="POST" th:action="@{/add_user/add}" th:object="${user}">
+                            <form th:method="POST" th:action="@{/add_user/add}" th:object="${newUser}" >
                                 <div class="mb-3">
                                     <label for="inputUsername" class="form-label">First name</label>
-                                    <input type="text" class="form-control form-control-sm" id="inputUsername" th:field="*{username}">
+                                    <input type="text" class="form-control form-control-sm" id="inputUsername"
+                                           th:field="*{username}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="inputLastname" class="form-label">Last name</label>
-                                    <input type="text" class="form-control form-control-sm" id="inputLastname" th:field="*{lastname}">
+                                    <input type="text" class="form-control form-control-sm" id="inputLastname"
+                                           th:field="*{lastname}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="inputAge" class="form-label">Age</label>
-                                    <input type="number" class="form-control form-control-sm" id="inputAge" th:field="*{age}">
+                                    <input type="number" class="form-control form-control-sm" id="inputAge"
+                                           th:field="*{age}">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="inputEmail" class="form-label">Email address</label>
-                                    <input type="email" class="form-control form-control-sm" id="inputEmail" th:field="*{email}">
+                                    <label autocomplete="off" for="inputEmail" class="form-label">Email address</label>
+<!--                                    <div class="input-group has-validation">-->
+<!--                                        <input type="text" class="form-control form-control-sm" id=inputEmail" required>-->
+<!--                                        <div class="invalid-feedback">-->
+<!--                                            Пожалуйста, выберите имя пользователя.-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+                                    <input type="email" class="form-control " id="inputEmail"
+                                           th:field="*{email}">
+
+                                    <div class="invalid-feedback" th:if="${notUnique}" th:text="${notUnique}">
+                                        Пожалуйста, выберите имя пользователя.
+                                    </div>
+
+<!--                                    <div th:if="${notUnique}" th:text="${notUnique}"></div>-->
+
                                 </div>
                                 <div class="mb-3">
-                                    <label for="inputPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control form-control-sm" id="inputPassword"
-                                           th:field="*{password}">
+                                    <label autocomplete="off" for="inputPassword" class="form-label">Password</label>
+                                    <input type="text" class="form-control form-control-sm" id="inputPassword"
+                                           th:field="*{password}" required>
                                 </div>
                                 <div>
                                     <label for="inputRole" class="form-label">Role</label>
-                                    <select class="form-select" size="2" multiple aria-label="multiple select example" id="inputRole">
+                                    <select class="form-select" size="2" multiple aria-label="multiple select example" id="inputRole" required>
                                         <div th:each="role : ${userRoles}">
                                             <option th:name="uRoles" th:value="${role}" th:text="${role.name()}">User</option>
                                         </div>
                                     </select>
+                                </div>
+                                <div th:if="${errors}">
+                                    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>
                                 </div>
                                 <button type="submit" class="btn btn-success" style="margin-top: 20px;">Add new user</button>
                             </form>

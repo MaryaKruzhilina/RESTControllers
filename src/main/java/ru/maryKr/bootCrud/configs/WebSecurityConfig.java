@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.service.AdminServiceImpl;
 import ru.maryKr.bootCrud.service.UserServiceImpl;
 
 @Configuration
@@ -32,9 +33,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/index/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/welcome", "/add_user/**", "/").permitAll()
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/index/**", "/add_user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/welcome", "/add_user", "/").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.successHandler(successUserHandler).permitAll())
                 .logout(logout -> logout
@@ -45,8 +46,8 @@ public class WebSecurityConfig {
     }
     @Bean
     public UserDetailsService userDetailsService() throws UsernameNotFoundException {
-        return username -> {
-            User user = service.findByUsername(username);
+        return email -> {
+            User user = service.findByEmail(email);
             return user;
         };
     }

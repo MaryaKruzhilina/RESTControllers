@@ -5,8 +5,8 @@ import ru.maryKr.bootCrud.model.User;
 import java.util.List;
 
 public interface AdminService {
-    User findByUsername(String username);
-    boolean isNotUsernameUnique(String username);
+    User findByEmail(String email);
+    boolean isNotEmailUnique(String username);
     void addUser(User user);
     void removeUser(long id);
     List<User> getUsers();

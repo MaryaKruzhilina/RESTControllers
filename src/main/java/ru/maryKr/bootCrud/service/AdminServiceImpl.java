@@ -6,10 +6,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.maryKr.bootCrud.configs.MyPasswordEncoder;
+import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
+import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.repositiry.AdminRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -21,17 +25,18 @@ public class AdminServiceImpl implements AdminService {
     private MyPasswordEncoder passwordEncoder;
 
     public AdminServiceImpl(AdminRepository adminRepository) {
+
         this.adminRepository = adminRepository;
     }
     @Override
     @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        return adminRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+    public User findByEmail(String email) {
+        return adminRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + " not found"));
     }
     @Override
     @Transactional
-    public boolean isNotUsernameUnique(String username) {
-        return adminRepository.findByUsername(username).isPresent();
+    public boolean isNotEmailUnique(String email) {
+        return adminRepository.findByEmail(email).isPresent();
     }
     @Override
     @Transactional

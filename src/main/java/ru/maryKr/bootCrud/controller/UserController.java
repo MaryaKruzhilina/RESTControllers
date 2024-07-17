@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.service.UserService;
 import ru.maryKr.bootCrud.service.UserServiceImpl;
 
@@ -19,10 +20,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/index")
+    @GetMapping("/index/user")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String getUserPage(@AuthenticationPrincipal UserDetails userDetails, ModelMap model) {
-        model.addAttribute("user", service.findByUsername(userDetails.getUsername()));
+        model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+        model.addAttribute("newUser", new User());
         return "/index";
     }
 

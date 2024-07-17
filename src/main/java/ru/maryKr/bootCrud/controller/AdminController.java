@@ -1,6 +1,8 @@
 package ru.maryKr.bootCrud.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -47,7 +49,7 @@ public class AdminController {
                 roles.add(role);
             }
         }
-        if(service.isNotUsernameUnique(user.getName()) && service.findByUsername(user.getName()).getId() != user.getId()) {
+        if(service.isNotEmailUnique(user.getName()) && service.findByEmail(user.getEmail()).getId() != user.getId()) {
             model.addAttribute("user", user);
             model.addAttribute("userRoles", UserRole.values());
             model.addAttribute("notUnique", "Пользователь с таким именем уже есть в базе");
@@ -80,15 +82,56 @@ public class AdminController {
         service.removeUser(id);
         return "redirect:/admin";
     }
-    @GetMapping("/admin")
+    @GetMapping("/index/admin")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public String getTable(ModelMap model) {
-        List<User> users = service.getUsers();
-        if (users.size() == 0) {
-            return "redirect:/add_user";
-        } else {
-            model.addAttribute("users_list", users);
-            return "admin";
+    public String getTable(@AuthenticationPrincipal UserDetails userDetails, ModelMap model) {
+        model.addAttribute("users_list", service.getUsers());
+        model.addAttribute("userRoles", UserRole.values());
+        model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+        model.addAttribute("newUser", new User());
+        return "index";
+    }
+
+    @GetMapping("/add_user")
+    public String addUser(Model model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("userRoles", UserRole.values());
+        return "add_user";
+    }
+
+    @PostMapping("/add_user/add")
+    public String addNewUser(@ModelAttribute("user")@Validated User user,
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             @RequestParam(name = "uRoles", required = false) String[] userRoles,
+                             BindingResult bindingResult, ModelMap model) {
+
+        Set<Role> roles = new HashSet<>();
+        if(userRoles != null) {
+            for(String ur : userRoles) {
+                UserRole urRole = UserRole.valueOf(ur);
+                Role role = new Role();
+                role.setUserRole(urRole);
+                roles.add(role);
+            }
         }
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("users_list", service.getUsers());
+            model.addAttribute("user", user);
+            model.addAttribute("newUser", new User());
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "index";
+        }
+        if(service.isNotEmailUnique(user.getUsername())) {
+            model.addAttribute("users_list", service.getUsers());
+            model.addAttribute("user", user);
+            model.addAttribute("newUser", new User());
+            model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("notUnique", "Пользователь с такой почтой уже есть в базе");
+            return "index";
+        }
+        user.setRoles(roles);
+        service.addUser(user);
+        return "index";
     }
 }

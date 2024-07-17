@@ -5,5 +5,5 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.maryKr.bootCrud.model.User;
 
 public interface UserService {
-    User findByUsername(String username);
+    User findByEmail(String email);
 }
