@@ -2,7 +2,6 @@ package ru.maryKr.bootCrud.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,11 +17,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank(message = "Введите пароль")
+   // @NotBlank(message = "Введите пароль")
     private String password;
 
-    @NotBlank(message = "Введите имя")
-    private String username;
+  //  @NotBlank(message = "Введите имя")
+    private String name;
 
     @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<Role> roles = new HashSet<>();
@@ -30,7 +29,7 @@ public class User implements UserDetails {
     private String lastname;
 
     @Email(message = "Введите корректный email")
-    @NotBlank
+   // @NotBlank
     private String email;
 
     private int age;
@@ -77,11 +76,11 @@ public class User implements UserDetails {
     }
 
     public String getName() {
-        return username;
+        return name;
     }
 
     public void setName(String name) {
-        this.username = name;
+        this.name = name;
     }
 
     public String getLastname() {
@@ -111,7 +110,7 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + username + '\'' +
+                "name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +

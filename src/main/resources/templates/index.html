@@ -129,7 +129,7 @@
                                 <div class="mb-3">
                                     <label for="inputUsername" class="form-label">First name</label>
                                     <input type="text" class="form-control form-control-sm" id="inputUsername"
-                                           th:field="*{username}">
+                                           th:field="*{name}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="inputLastname" class="form-label">Last name</label>
@@ -143,20 +143,13 @@
                                 </div>
                                 <div class="mb-3">
                                     <label autocomplete="off" for="inputEmail" class="form-label">Email address</label>
-<!--                                    <div class="input-group has-validation">-->
-<!--                                        <input type="text" class="form-control form-control-sm" id=inputEmail" required>-->
-<!--                                        <div class="invalid-feedback">-->
-<!--                                            Пожалуйста, выберите имя пользователя.-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+
                                     <input type="email" class="form-control " id="inputEmail"
                                            th:field="*{email}">
 
-                                    <div class="invalid-feedback" th:if="${notUnique}" th:text="${notUnique}">
-                                        Пожалуйста, выберите имя пользователя.
-                                    </div>
-
-<!--                                    <div th:if="${notUnique}" th:text="${notUnique}"></div>-->
+<!--                                    <div class="invalid-feedback" th:if="${notUnique}" th:text="${notUnique}">-->
+<!--                                        Пожалуйста, выберите имя пользователя.-->
+<!--                                    </div>-->
 
                                 </div>
                                 <div class="mb-3">
@@ -172,9 +165,9 @@
                                         </div>
                                     </select>
                                 </div>
-                                <div th:if="${errors}">
-                                    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>
-                                </div>
+<!--                                <div th:if="${errors}">-->
+<!--                                    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>-->
+<!--                                </div>-->
                                 <button type="submit" class="btn btn-success" style="margin-top: 20px;">Add new user</button>
                             </form>
                         </div>
