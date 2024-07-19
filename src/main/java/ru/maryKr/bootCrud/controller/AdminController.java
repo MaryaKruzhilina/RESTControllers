@@ -93,13 +93,14 @@ public class AdminController {
 
     @GetMapping("/add_user")
     public String addUser(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("newUser", new User());
         model.addAttribute("userRoles", UserRole.values());
         return "add_user";
     }
 
     @PostMapping("/add_user/add")
-    public String addNewUser(@ModelAttribute("user") User user,
+    public String addNewUser(@ModelAttribute("user") @Validated User user,
+                             BindingResult bindingResult,
                              @AuthenticationPrincipal UserDetails userDetails,
                              @RequestParam(name = "uRoles", required = false) String[] userRoles,
                              ModelMap model) {
@@ -113,24 +114,27 @@ public class AdminController {
                 roles.add(role);
             }
         }
-//        if(bindingResult.hasErrors()) {
-//            model.addAttribute("users_list", service.getUsers());
-//            model.addAttribute("user", user);
-//            model.addAttribute("newUser", new User());
-//            model.addAttribute("userRoles", UserRole.values());
-//            model.addAttribute("errors", bindingResult.getAllErrors());
-//            return "index";
-//        }
+//        if(service.isNotEmailUnique(user.getUsername())){
+   //         bindingResult.rejectValue("email", "error.newUser", "Пользователь с такой почтой уже есть в базе");
+      //  }
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("users_list", service.getUsers());
+           // model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+            model.addAttribute("newUser", user);
+            model.addAttribute("userRoles", UserRole.values());
+            return "index";
+        }
 //        if(service.isNotEmailUnique(user.getUsername())) {
 //            model.addAttribute("users_list", service.getUsers());
-//            model.addAttribute("user", user);
-//            model.addAttribute("newUser", new User());
+//            model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+//            model.addAttribute("newUser", user);
 //            model.addAttribute("userRoles", UserRole.values());
 //            model.addAttribute("notUnique", "Пользователь с такой почтой уже есть в базе");
 //            return "index";
 //        }
+
         user.setRoles(roles);
         service.addUser(user);
-        return "index";
+        return "redirect:/index/admin";
     }
 }
