@@ -42,10 +42,7 @@ public class AdminController {
         Set<Role> roles = new HashSet<>();
         if(userRoles != null) {
             for(String ur : userRoles) {
-                UserRole urRole = UserRole.valueOf(ur);
-                Role role = new Role();
-                role.setUserRole(urRole);
-                roles.add(role);
+                roles.add(new Role(UserRole.valueOf(ur)));
             }
         }
         if(service.isNotEmailUnique(user.getName()) && service.findByEmail(user.getEmail()).getId() != user.getId()) {
@@ -91,12 +88,12 @@ public class AdminController {
         return "index";
     }
 
-    @GetMapping("/add_user")
-    public String addUser(Model model) {
-        model.addAttribute("newUser", new User());
-        model.addAttribute("userRoles", UserRole.values());
-        return "add_user";
-    }
+//    @GetMapping("/add_user")
+//    public String addUser(Model model) {
+//        model.addAttribute("newUser", new User());
+//        model.addAttribute("userRoles", UserRole.values());
+//        return "add_user";
+//    }
 
     @PostMapping("/add_user/add")
     public String addNewUser(@ModelAttribute("user") @Validated User user,
@@ -108,30 +105,17 @@ public class AdminController {
         Set<Role> roles = new HashSet<>();
         if(userRoles != null) {
             for(String ur : userRoles) {
-                UserRole urRole = UserRole.valueOf(ur);
-                Role role = new Role();
-                role.setUserRole(urRole);
-                roles.add(role);
+                roles.add(new Role(UserRole.valueOf(ur)));
             }
         }
-//        if(service.isNotEmailUnique(user.getUsername())){
-   //         bindingResult.rejectValue("email", "error.newUser", "Пользователь с такой почтой уже есть в базе");
-      //  }
-        if(bindingResult.hasErrors()) {
+        if(service.isNotEmailUnique(user.getUsername())){
             model.addAttribute("users_list", service.getUsers());
-           // model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+            model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
             model.addAttribute("newUser", user);
             model.addAttribute("userRoles", UserRole.values());
+            model.addAttribute("errors", "Пользователь с такой почтой уже есть в базе");
             return "index";
         }
-//        if(service.isNotEmailUnique(user.getUsername())) {
-//            model.addAttribute("users_list", service.getUsers());
-//            model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
-//            model.addAttribute("newUser", user);
-//            model.addAttribute("userRoles", UserRole.values());
-//            model.addAttribute("notUnique", "Пользователь с такой почтой уже есть в базе");
-//            return "index";
-//        }
 
         user.setRoles(roles);
         service.addUser(user);

@@ -32,7 +32,7 @@ public class User implements UserDetails {
 
     @Email(message = "Введите корректный email")
     @NotBlank
-    @UniqueEmail
+  //  @UniqueEmail
     private String email;
 
     private int age;

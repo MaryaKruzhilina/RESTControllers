@@ -36,7 +36,7 @@
 <!--    <div th:if="${errors}">-->
 <!--        <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>-->
 <!--    </div>-->
-<!--    <div th:if="${notUnique}" th:text="${notUnique}"></div>-->
+<!--    -->
 <!--    <input type="text" placeholder="Имя" th:field="*{name}">-->
 <!--    <input type="text" placeholder="Пароль" th:field="*{password}">-->
 <!--    <input type="text" placeholder="Фамилия" th:field="*{lastname}">-->
@@ -76,10 +76,8 @@
 
         <input type="email" class="form-control" id="inputEmail"
                th:field="*{email}" required>
-        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            <div th:if="${errors}" th:text="${errors}"></div>
     </div>
-
-
 
     <div class="mb-3">
         <label autocomplete="off" for="inputPassword" class="form-label">Password</label>
@@ -92,10 +90,10 @@
             <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">User</option>
         </select>
     </div>
-    <!--                                <div th:if="${errors}">-->
-    <!--                                    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>-->
-    <!--                                </div>-->
     <button type="submit" class="btn btn-success" style="margin-top: 20px;">Add new user</button>
+    <div th:if="${#fields.hasErrors('email')}">
+        <p th:text="${#fields.errors('email')}"></p>
+    </div>
 </form>
 
 </body>

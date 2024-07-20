@@ -73,17 +73,20 @@
 
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="users-table-tab" data-bs-toggle="tab" data-bs-target="#users-table"
+                        <button class="nav-link active" id="users-table-tab"
+                                data-bs-toggle="tab" data-bs-target="#users-table"
                                 type="button" role="tab">Users table</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="new-user-tab" data-bs-toggle="tab" data-bs-target="#new-user" type="button"
-                                role="tab">New User</button>
+                        <button class="nav-link" id="new-user-tab"
+                                data-bs-toggle="tab" data-bs-target="#new-user"
+                                type="button" role="tab">New User</button>
                     </li>
                 </ul>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="users-table" role="tabpanel" aria-labelledby="users-table-tab">
+                    <div class="tab-pane fade show active" id="users-table"
+                         role="tabpanel" aria-labelledby="users-table-tab">
                         <h5 class="p-6">All users</h5>
                         <table class="table table-striped">
                             <thead>
@@ -111,11 +114,18 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-info"
-                                            style="padding-right: 12px; padding-left: 12px; color:aliceblue;" data-target="#">Edit</button>
+                                    <button type="button"
+                                            class="btn btn-info"
+                                            style="padding-right: 12px;
+                                            padding-left: 12px;
+                                            color:aliceblue;"
+                                            data-target="#">Edit</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-danger" style="padding-right: 12px; padding-left: 12px;"
+                                    <button type="button"
+                                            class="btn btn-danger"
+                                            style="padding-right: 12px;
+                                            padding-left: 12px;"
                                             data-target="#">Delete</button>
                                 </td>
                             </tr>
@@ -146,10 +156,8 @@
 
                                     <input type="email" class="form-control" id="inputEmail"
                                            th:field="*{email}" required>
-                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                    <div th:if="${errors}" th:text="${errors}"></div>
                                 </div>
-
-
 
                                 <div class="mb-3">
                                     <label autocomplete="off" for="inputPassword" class="form-label">Password</label>
@@ -158,14 +166,19 @@
                                 </div>
                                 <div>
                                     <label for="inputRole" class="form-label">Role</label>
-                                    <select class="form-select" size="2" multiple aria-label="multiple select example" id="inputRole" th:name="uRoles" required>
-                                        <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">User</option>
+                                    <select class="form-select" size="2" multiple aria-label="multiple select example"
+                                            id="inputRole" th:name="uRoles" required>
+                                        <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
+                                            User
+                                        </option>
                                     </select>
                                 </div>
-<!--                                <div th:if="${errors}">-->
-<!--                                    <p th:each="error : ${errors}" th:text="${error.defaultMessage}" > Error message </p>-->
-<!--                                </div>-->
-                                <button type="submit" class="btn btn-success" style="margin-top: 20px;">Add new user</button>
+                                <button type="submit" class="btn btn-success" style="margin-top: 20px;">
+                                    Add new user
+                                </button>
+                                <div th:if="${#fields.hasErrors('email')}">
+                                    <p th:text="${#fields.errors('email')}"></p>
+                                </div>
                             </form>
                         </div>
                     </div>
