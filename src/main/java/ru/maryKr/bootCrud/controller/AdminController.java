@@ -29,47 +29,42 @@ public class AdminController {
 
     @GetMapping("/admin/update_user")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String update(@RequestParam(name = "id") Long id, Model model) {
-        model.addAttribute("user", service.getUser(id));
+    public String update(@RequestParam(name = "id") Long id,
+                         @AuthenticationPrincipal UserDetails userDetails,
+                         Model model) {
+        User user = service.getUser(id);
+        user.setPassword("");
+        model.addAttribute("users_list", service.getUsers());
+        model.addAttribute("userUpdate", user);
+        model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
         model.addAttribute("userRoles", UserRole.values());
-        return "update_user";
+        return "update";
     }
 
     @PostMapping("/admin/update_user/update")
-    public String edit(@ModelAttribute("user")@Validated User user,
-                       BindingResult bindingResult,
+    public String edit(@ModelAttribute("userUpdate") User user,
+                       @AuthenticationPrincipal UserDetails userDetails,
                        @RequestParam(name = "uRoles", required = false) String[] userRoles, ModelMap model) {
+
         Set<Role> roles = new HashSet<>();
         if(userRoles != null) {
             for(String ur : userRoles) {
                 roles.add(new Role(UserRole.valueOf(ur)));
             }
         }
-        if(service.isNotEmailUnique(user.getName()) && service.findByEmail(user.getEmail()).getId() != user.getId()) {
-            model.addAttribute("user", user);
+        if(service.isNotEmailUnique(user.getUsername()) && !(user.getEmail().equals(service.getUser(user.getId()).getEmail()))) {
+            user.setPassword("");
+            model.addAttribute("users_list", service.getUsers());
+            model.addAttribute("userUpdate", user);
+            model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
             model.addAttribute("userRoles", UserRole.values());
-            model.addAttribute("notUnique", "Пользователь с таким именем уже есть в базе");
-            return "update_user";
+            model.addAttribute("errors", "Пользователь с такой почтой уже есть в базе");
+            return "update";
         }
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("user", user);
-            model.addAttribute("userRoles", UserRole.values());
-            model.addAttribute("errors", bindingResult.getAllErrors());
-            return "update_user";
-        }
-
-        if(roles.isEmpty()) {
-            model.addAttribute("user", user);
-            model.addAttribute("userRoles", UserRole.values());
-            model.addAttribute("notRolesError", "Выберите роль");
-            return "update_user";
-        }
-
 
         user.setRoles(roles);
-
         service.addUser(user);
-        return "redirect:/admin";
+        return "redirect:/index/admin";
     }
 
     @GetMapping("/admin/delete")
@@ -88,16 +83,8 @@ public class AdminController {
         return "index";
     }
 
-//    @GetMapping("/add_user")
-//    public String addUser(Model model) {
-//        model.addAttribute("newUser", new User());
-//        model.addAttribute("userRoles", UserRole.values());
-//        return "add_user";
-//    }
-
     @PostMapping("/add_user/add")
-    public String addNewUser(@ModelAttribute("user") @Validated User user,
-                             BindingResult bindingResult,
+    public String addNewUser(@ModelAttribute("newUser") User user,
                              @AuthenticationPrincipal UserDetails userDetails,
                              @RequestParam(name = "uRoles", required = false) String[] userRoles,
                              ModelMap model) {

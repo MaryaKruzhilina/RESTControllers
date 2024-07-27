@@ -30,6 +30,9 @@
             border-top: none;
             padding: 1rem;
         }
+        .modal-backdrop.show {
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +55,67 @@
         </div>
     </nav>
 </header>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
+                <a th:href="@{/index/admin}" class="btn-close" aria-label="Close"></a>
+            </div>
+            <div class="modal-body" style="text-align: center; margin: 0 auto; width: 50%; font-weight: bold">
+                <form th:method="POST" th:action="@{/admin/update_user/update}" th:object="${userUpdate}" >
+                    <div class="mb-3">
+                        <label for="userID" class="form-label">ID</label>
+                        <input type="number" class="form-control form-control-sm" id="userID"
+                               th:field="*{id}" disabled>
+                        <input type="hidden" th:field="*{id}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputUsername" class="form-label">First name</label>
+                        <input type="text" class="form-control form-control-sm" id="inputUsername"
+                               th:field="*{name}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputLastname" class="form-label">Last name</label>
+                        <input type="text" class="form-control form-control-sm" id="inputLastname"
+                               th:field="*{lastname}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputAge" class="form-label">Age</label>
+                        <input type="number" class="form-control form-control-sm" id="inputAge"
+                               th:field="*{age}">
+                    </div>
+                    <div class="mb-3">
+                        <label autocomplete="off" for="inputEmail" class="form-label">Email address</label>
+
+                        <input type="email" class="form-control" id="inputEmail"
+                               th:field="*{email}" required>
+                        <div th:if="${errors}" th:text="${errors}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label autocomplete="off" for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control form-control-sm" id="inputPassword" th:field="*{password}" required>
+                    </div>
+                    <div>
+                        <label for="inputRole" class="form-label">Role</label>
+                        <select class="form-select" size="2" multiple aria-label="multiple select example"
+                                id="inputRole" th:name="uRoles" required>
+                            <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
+                                User
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <a th:href="@{/index/admin}" class="btn btn-secondary" aria-label="Close">Close</a>
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid" style="margin-top: 15px;">
     <div class="row">
@@ -114,11 +178,12 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-info"
-                                       style="padding-right: 12px; padding-left: 12px; color: aliceblue;"
-                                       th:href="@{/admin/update_user(id=${user.id})}">
-                                        Edit
-                                    </a>
+                                    <button type="button"
+                                            class="btn btn-info"
+                                            style="padding-right: 12px;
+                                            padding-left: 12px;
+                                            color:aliceblue;"
+                                            data-target="#">Edit</button>
                                 </td>
                                 <td>
                                     <button type="button"
@@ -131,94 +196,12 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="tab-pane fade" id="new-user" role="tabpanel" aria-labelledby="new-user-tab">
-                        <h5 class="p-6">Add new user</h5>
-                        <div class="container" style="text-align: center; margin: 0 auto; width: 30%; font-weight: bold">
-                            <form th:method="POST" th:action="@{/add_user/add}" th:object="${newUser}" >
-                                <div class="mb-3">
-                                    <label for="inputUsername" class="form-label">First name</label>
-                                    <input type="text" class="form-control form-control-sm" id="inputUsername"
-                                           th:field="*{name}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="inputLastname" class="form-label">Last name</label>
-                                    <input type="text" class="form-control form-control-sm" id="inputLastname"
-                                           th:field="*{lastname}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="inputAge" class="form-label">Age</label>
-                                    <input type="number" class="form-control form-control-sm" id="inputAge"
-                                           th:field="*{age}">
-                                </div>
-                                <div class="mb-3">
-                                    <label autocomplete="off" for="inputEmail" class="form-label">Email address</label>
 
-                                    <input type="email" class="form-control" id="inputEmail"
-                                           th:field="*{email}" required>
-                                    <div th:if="${errors}" th:text="${errors}"></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label autocomplete="off" for="inputPassword" class="form-label">Password</label>
-                                    <input type="text" class="form-control form-control-sm" id="inputPassword"
-                                           th:field="*{password}" required>
-                                </div>
-                                <div>
-                                    <label for="inputRole" class="form-label">Role</label>
-                                    <select class="form-select" size="2" multiple aria-label="multiple select example"
-                                            id="inputRole" th:name="uRoles" required>
-                                        <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
-                                            User
-                                        </option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-success" style="margin-top: 20px;">
-                                    Add new user
-                                </button>
-<!--                                <div th:if="${#fields.hasErrors('email')}">-->
-<!--                                    <p th:text="${#fields.errors('email')}"></p>-->
-<!--                                </div>-->
-                            </form>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <div id="userModal" class="content" >
                 <h1>User information-page</h1>
-
-                <div style="border: 1px solid #dee2e6;">
-                    <h5 style="padding-left: 20px; padding-top: 10px;">About user</h5>
-                    <hr>
-                    <div class="p-3">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Age</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Role</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr class="align-middle">
-                                <td th:text="${user.getId}">1</td>
-                                <td th:text="${user.getUsername}">Mark</td>
-                                <td th:text="${user.getLastname}">Otto</td>
-                                <td th:text="${user.getAge}">31</td>
-                                <td th:text="${user.getEmail}"> @mdo</td>
-                                <td>
-                                    <span th:each="role: ${user.getRoles()}"
-                                          th:text="${#strings.replace(role.getUserRole(), 'ROLE_', ' ')}">
-                                    </span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -233,24 +216,15 @@
         crossorigin="anonymous"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var buttons = document.querySelectorAll('button[data-target]');
-        buttons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                var target = button.getAttribute('data-target');
-                var contentSections = document.querySelectorAll('.content');
-                contentSections.forEach(function (section) {
-                    section.style.display = 'none';
-                });
-                var targetSection = document.querySelector(target);
-                if (targetSection) {
-                    targetSection.style.display = 'block';
-                }
-            });
-        });
         var adminButton = document.getElementById('adminButton');
         if (adminButton) {
             adminButton.click();
         }
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        myModal.show();
     });
 </script>
 </body>
