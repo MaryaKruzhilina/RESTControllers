@@ -15,6 +15,8 @@ public class UniqueUserValidator implements ConstraintValidator<UniqueEmail, Str
         this.service = service;
     }
 
+    //не удалось создать рабочий валидатор, хочу спросить что не так
+
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
         return (!service.isNotEmailUnique(email));

@@ -10,8 +10,6 @@ import ru.maryKr.bootCrud.configs.MyPasswordEncoder;
 import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.repositiry.UserRepository;
 
-import java.util.List;
-
 @Service
 @Validated
 public class UserServiceImpl implements UserService {

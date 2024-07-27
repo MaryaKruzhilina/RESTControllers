@@ -121,11 +121,11 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <button type="button"
-                                            class="btn btn-danger"
-                                            style="padding-right: 12px;
-                                            padding-left: 12px;"
-                                            data-target="#">Delete</button>
+                                    <a class="btn btn-danger"
+                                       style="padding-right: 12px; padding-left: 12px;"
+                                       th:href="@{/admin/delete(id=${user.id})}">
+                                        Delete
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>

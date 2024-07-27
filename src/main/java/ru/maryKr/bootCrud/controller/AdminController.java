@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
@@ -66,12 +64,24 @@ public class AdminController {
         service.addUser(user);
         return "redirect:/index/admin";
     }
-
     @GetMapping("/admin/delete")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String edit(@RequestParam("id") long id) {
-        service.removeUser(id);
-        return "redirect:/admin";
+    public String delete(@RequestParam(name = "id") Long id,
+                         @AuthenticationPrincipal UserDetails userDetails,
+                         Model model) {
+        User user = service.getUser(id);
+        user.setPassword("");
+        model.addAttribute("users_list", service.getUsers());
+        model.addAttribute("userDelete", user);
+        model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
+        model.addAttribute("userRoles", UserRole.values());
+        return "delete";
+    }
+
+    @PostMapping("/admin/delete/userDelete")
+    public String deleteUser(@ModelAttribute("userDelete") User user) {
+        service.removeUser(user.getId());
+        return "redirect:/index/admin";
     }
     @GetMapping("/index/admin")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")

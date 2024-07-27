@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.maryKr.bootCrud.validator.UniqueEmail;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,6 +40,14 @@ public class User implements UserDetails {
     public User() {
     }
 
+    public User(String password, String name, Set<Role> roles, String lastname, String email, int age) {
+        this.password = password;
+        this.name = name;
+        this.roles = roles;
+        this.lastname = lastname;
+        this.email = email;
+        this.age = age;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

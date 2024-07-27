@@ -6,14 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import ru.maryKr.bootCrud.configs.MyPasswordEncoder;
-import ru.maryKr.bootCrud.model.Role;
 import ru.maryKr.bootCrud.model.User;
-import ru.maryKr.bootCrud.model.UserRole;
 import ru.maryKr.bootCrud.repositiry.AdminRepository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
