@@ -12,7 +12,6 @@ import ru.maryKr.bootCrud.repositiry.AdminRepository;
 import java.util.List;
 
 @Service
-@Transactional
 @Validated
 public class AdminServiceImpl implements AdminService {
 
