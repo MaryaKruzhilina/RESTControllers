@@ -34,7 +34,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/index/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/", "/login/**").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -42,6 +42,7 @@ public class WebSecurityConfig {
                         .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .permitAll())
+                .csrf(csrf -> csrf .ignoringRequestMatchers("/api/**"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")

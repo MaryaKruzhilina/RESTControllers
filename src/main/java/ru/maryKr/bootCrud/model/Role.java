@@ -1,5 +1,7 @@
 package ru.maryKr.bootCrud.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -17,6 +19,10 @@ public class Role implements GrantedAuthority {
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
+
+
+
+
 
     public Role() {
         ;
