@@ -1,5 +1,7 @@
 package ru.maryKr.bootCrud.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.maryKr.bootCrud.controller.exception_handling.NoSuchUserException;
 import ru.maryKr.bootCrud.controller.exception_handling.NotUniqueEmail;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class RestUsersController {
 
     private final AdminService service;
@@ -31,7 +34,8 @@ public class RestUsersController {
         if(user == null){
             throw new NoSuchUserException("Пользователь с таким ID не найден");
         }
-        return new UserDTO(user);
+        UserDTO userDTO = new UserDTO(user);
+        return userDTO;
     }
     @PostMapping("/users")
     public UserDTO createUser(@RequestBody User user) {
@@ -57,6 +61,12 @@ public class RestUsersController {
         }
         service.removeUser(id);
         return "Пользователь удален";
+    }
+    @GetMapping("/currentUser")
+    public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        UserDTO userDTO = new UserDTO(user);
+        return ResponseEntity.ok(userDTO);
     }
 
 }

@@ -19,4 +19,6 @@ public class NoAuthorizedController {
     public String getStartPage() {
         return "login";
     }
+
+
 }

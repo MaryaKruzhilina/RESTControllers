@@ -32,9 +32,10 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/index/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/index","/index/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/", "/login/**").permitAll()
-                        .anyRequest().permitAll())
+                        //.anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
@@ -45,7 +46,7 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf .ignoringRequestMatchers("/api/**"))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/login")
                         .permitAll());
         return http.build();
     }
