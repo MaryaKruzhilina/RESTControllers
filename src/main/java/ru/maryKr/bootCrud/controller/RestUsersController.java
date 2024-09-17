@@ -1,6 +1,7 @@
 package ru.maryKr.bootCrud.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.maryKr.bootCrud.controller.exception_handling.NoSuchUserException;
@@ -54,13 +55,16 @@ public class RestUsersController {
         return new UserDTO(user);
     }
     @DeleteMapping("/users/{id}")
-    public String deleteUser(@PathVariable int id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteUser(@PathVariable int id) {
         User user = service.getUser(id);
         if(user == null){
             throw new NoSuchUserException("Пользователь с таким ID не найден");
         }
         service.removeUser(id);
-        return "Пользователь удален";
+        String message = String.format("Пользователь id - %s удален", id);
+        System.out.println(message);
+        return ResponseEntity.ok(message);
     }
     @GetMapping("/currentUser")
     public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
@@ -68,5 +72,4 @@ public class RestUsersController {
         UserDTO userDTO = new UserDTO(user);
         return ResponseEntity.ok(userDTO);
     }
-
 }

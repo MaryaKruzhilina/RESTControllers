@@ -83,16 +83,6 @@ public class AdminController {
         service.removeUser(user.getId());
         return "redirect:/index/admin";
     }
-    @GetMapping("/index")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public String getTable(@AuthenticationPrincipal UserDetails userDetails, ModelMap model) {
-        // model.addAttribute("users_list", service.getUsers());
-        model.addAttribute("userRoles", UserRole.values());
-       // model.addAttribute("user", service.findByEmail(userDetails.getUsername()));
-        model.addAttribute("userAuthId", userDetails.getUsername());
-        model.addAttribute("newUser", new User());
-        return "index";
-    }
 
 
     @PostMapping("/add_user/add")

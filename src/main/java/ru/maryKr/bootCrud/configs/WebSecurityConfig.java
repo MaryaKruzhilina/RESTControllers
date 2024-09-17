@@ -34,8 +34,8 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/index","/index/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/", "/login/**").permitAll()
-                        //.anyRequest().permitAll())
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
+                        //.anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")

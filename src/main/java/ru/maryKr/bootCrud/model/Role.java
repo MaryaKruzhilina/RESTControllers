@@ -21,9 +21,6 @@ public class Role implements GrantedAuthority {
     private Set<User> users = new HashSet<>();
 
 
-
-
-
     public Role() {
         ;
     }

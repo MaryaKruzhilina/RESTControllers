@@ -12,7 +12,7 @@ public class UserDTO {
     private String email;
     private int age;
     private String lastname;
-    Set <String> roles = new HashSet<>();
+    Set<String> roles = new HashSet<>();
 
     public UserDTO() {
     }
@@ -31,7 +31,7 @@ public class UserDTO {
         this.email = user.getEmail();
         this.age = user.getAge();
         this.lastname = user.getLastname();
-        for(Role role : user.getRoles()) {
+        for (Role role : user.getRoles()) {
             roles.add(role.getUserRole().toString().replace("ROLE_", ""));
         }
     }
