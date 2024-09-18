@@ -32,10 +32,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/index","/index/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/", "/login/**").permitAll()
-                        .anyRequest().permitAll())
-                        //.anyRequest().authenticated())
+                        .requestMatchers("/index","/api/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/", "/login").permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")

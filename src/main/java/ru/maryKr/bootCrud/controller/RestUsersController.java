@@ -4,8 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.maryKr.bootCrud.controller.exception_handling.NoSuchUserException;
-import ru.maryKr.bootCrud.controller.exception_handling.NotUniqueEmail;
+import ru.maryKr.bootCrud.exception_handling.NoSuchUserException;
+import ru.maryKr.bootCrud.exception_handling.NotUniqueEmail;
 import ru.maryKr.bootCrud.dto.UserDTO;
 import ru.maryKr.bootCrud.model.User;
 import ru.maryKr.bootCrud.service.AdminService;
@@ -30,6 +30,7 @@ public class RestUsersController {
         return users.stream().map(UserDTO::new).collect(Collectors.toList());
     }
     @GetMapping("/users/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO getUser(@PathVariable int id) {
         User user = service.getUser(id);
         if(user == null){
@@ -39,6 +40,7 @@ public class RestUsersController {
         return userDTO;
     }
     @PostMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO createUser(@RequestBody User user) {
         if(service.isNotEmailUnique(user.getUsername())){
             throw new NotUniqueEmail("Пользователь с такой почтой уже зарегистрирован");
@@ -47,6 +49,7 @@ public class RestUsersController {
         return new UserDTO(user);
     }
     @PutMapping("/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO updateUser(@RequestBody User user) {
         if(service.isNotEmailUnique(user.getUsername()) && !(user.getEmail().equals(service.getUser(user.getId()).getEmail()))){
             throw new NotUniqueEmail("Пользователь с такой почтой уже зарегистрирован");
