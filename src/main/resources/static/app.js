@@ -41,27 +41,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         async function handleFormSubmit(event){
             event.preventDefault()
             let formData = serializeForm(form.get(0))
+            console.log('Сериализуемые данные - ',formData)
             let response = sendForm(formData)
         }
         form.on('submit', handleFormSubmit)
 
-        //Сериализуем данные формы
-        function serializeForm(formNode){
-            let data = new FormData(formNode);
-            let result = {};
-            let rolesArray = [];
-
-            for (let [key, value] of data.entries()) {
-                if (key === 'userRoles') {
-                    rolesArray.push({ userRole: value }); // Если это роль, добавляем в массив ролей
-                } else {
-                    result[key] = value; // Остальные поля добавляем напрямую
-                }
-            }
-            // Добавляем массив ролей в итоговый объект данных
-            result['roles'] = rolesArray;
-            return result;
-        }
         //Отправляем сериализованный обьект на сервер
         async function sendForm(data){
             let errorText = $('#error-message')
@@ -128,6 +112,7 @@ function fillingUsersTable(usersList){
 
     createUserTable(usersList)
     onClickDeleteUser()
+    onClickEditUser()
 
     function createUserTable(userList) {
         let tableBody = $('#users-table-place tbody')
@@ -145,8 +130,9 @@ function fillingUsersTable(usersList){
                         <td>${user.roles.join(' ')}</td>
                         <td>
                             <a class="btn btn-info"
+                                id="edit-user"
                                 style="padding-right: 12px; padding-left: 12px; color: aliceblue;"
-                                th:href="@{/admin/update_user(id=2)}">
+                                data-id="${user.id}">
                                 Edit
                             </a>
                         </td>
@@ -161,18 +147,41 @@ function fillingUsersTable(usersList){
             tableBody.append(row)
         })
     }
-    //Добавление слежения за кликом DELETE
+    //Добавление слежения за кликом EDIT внутри таблицы пользователей
+    function onClickEditUser(){
+        $('body').on('click', '.btn-info', async function () {
+            console.log('Получем пользователя по id')
+            let userId = $(this).data('id')
+            let userEdit = await getUserById(userId)
+            fillingTheModalEditUser(userEdit)
+            $('#userEditModal').on('show.bs.modal', function () {
+                // Очищаем текст сообщения об ошибке и скрываем его
+                $('#editErrorMessage').text('').hide();
+            });
+        });
+    }
+    //Добавление слежения за кликом DELETE внутри таблицы пользователей
     function onClickDeleteUser(){
         $('body').on('click', '.delete-btn', async function () {
             console.log('Получем пользователя по id')
             let userId = $(this).data('id')
-           // deleteUser(userId)
             let userDelete = await getUserById(userId)
-            fillingTheModal(userDelete)
+            fillingTheModalDeleteUser(userDelete)
         });
     }
+    //Добавление данных в модальное окно для изменения данных
+    function fillingTheModalEditUser(user){
+        let modalUserInfo = $('#userEditModal')
+        $('#editUserID').val(user.id);
+        $('#editUsername').val(user.name);
+        $('#editUserLastname').val(user.lastname);
+        $('#editUserAge').val(user.age);
+        $('#editUserEmail').val(user.email);
+        modalUserInfo.modal('show');
 
-    function fillingTheModal(user){
+    }
+    //Добавление данных в модальное окно для удаления пользователя
+    function fillingTheModalDeleteUser(user){
         let modalUserInfo = $('#userDeleteModal')
         $('#deleteUserID').val(user.id);
         $('#deleteUsername').val(user.name);
@@ -182,10 +191,51 @@ function fillingUsersTable(usersList){
         modalUserInfo.modal('show');
 
     }
+    //Добавление слежения за кликом Edit внутри модального окна
+    (function () {
+        let form = $('#formEditUser')
+
+        async function handleFormSubmit(event) {
+            event.preventDefault()
+            let formData = serializeForm(form.get(0))
+            formData['id']=$('#editUserID').val()
+            console.log('Сериализуемые данные - ',formData)
+            let response = editUser(formData)
+        }
+        form.on('submit', handleFormSubmit)
+    })()
+
+    //Добавление слежения за кликом Delete внутри модального окна
     $('#confirmDeleteBtn').on('click', function () {
         let userId = $('#deleteUserID').val();  // Получаем ID пользователя для удаления
         let messages = deleteUser(userId)
     });
+}
+//Отправляем на сервер запрос на изменение данных о пользователе
+async function editUser(data){
+    let errorText = $('#editErrorMessage')
+
+    let response = await fetch(userCrudHtml,{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json' // Указываем, что не отправляем тело
+        },
+        body: JSON.stringify(data)
+    })
+    if (response.ok) {
+        //очищаем модальное окно
+        $('#formEditUser')[0].reset();
+        errorText.css('display', 'none').text('');
+
+        // Закрываем модальное окно
+        $('#userEditModal').modal('hide');
+        // Обновляем таблицу пользователей
+        fillingUsersTable(await responseUserList());
+    } else {
+        let errorResponse = await response.json()
+        errorText.text(errorResponse.info);
+        errorText.css('display', 'block');
+    }
 }
 //Отправляем на сервер запрос на удаление пользователя
 async function deleteUser(id){
@@ -254,5 +304,23 @@ async function responseUserAuth() {
             console.error('Ошибка:', error);
         })
     return response
+}
+//Сериализуем данные формы
+function serializeForm(formNode){
+    let data = new FormData(formNode);
+
+    let result = {};
+    let rolesArray = [];
+
+    for (let [key, value] of data.entries()) {
+        if (key === 'userRoles') {
+            rolesArray.push({ userRole: value }); // Если это роль, добавляем в массив ролей
+        } else {
+            result[key] = value; // Остальные поля добавляем напрямую
+        }
+    }
+    // Добавляем массив ролей в итоговый объект данных
+    result['roles'] = rolesArray;
+    return result;
 }
 
