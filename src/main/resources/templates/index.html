@@ -133,12 +133,11 @@
                                             <input type="email" class="form-control" id="deleteUserEmail" disabled>
                                         </div>
                                         <div>
-                                            <label for="inputRole" class="form-label">Role</label>
-                                            <select class="form-select" size="2" multiple aria-label="multiple select example"
-                                                    id="deleteUserRole" th:name="uRoles" disabled>
-                                                <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
-                                                    User
-                                                </option>
+                                            <label for="deleteUserRole" class="form-label">Role</label>
+                                            <select name="userRoles" class="form-select" size="2" multiple aria-label="multiple select example"
+                                                    id="deleteUserRole" required>
+                                                <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                                <option value="ROLE_USER">ROLE_USER</option>
                                             </select>
                                         </div>
                                         <div class="modal-footer">
@@ -181,11 +180,10 @@
                                                id="editUserPassword"  required>
 
                                         <label for="editUserRoles" class="form-label">Role</label>
-                                        <select name="userRoles" class="form-select" size="2"
-                                                multiple aria-label="multiple select example" id="editUserRoles" required>
-                                            <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
-                                                User
-                                            </option>
+                                        <select name="userRoles" class="form-select" size="2" multiple aria-label="multiple select example"
+                                                id="editUserRoles" required>
+                                            <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                            <option value="ROLE_USER">ROLE_USER</option>
                                         </select>
 
                                         <div id="editErrorMessage" class="alert alert-danger my-3" style="display: none;"></div>
@@ -221,12 +219,11 @@
                                     <input name="password" type="text" class="form-control form-control-sm" id="inputPassword" required>
 
                                     <label for="inputRole" class="form-label">Role</label>
-                                    <select name="userRoles" class="form-select" size="2" multiple aria-label="multiple select example"
-                                            id="inputRole" required>
-                                        <option th:each="role : ${userRoles}" th:value="${role}" th:text="${role.name()}">
-                                            User
-                                        </option>
-                                    </select>
+                                <select name="userRoles" class="form-select" size="2" multiple aria-label="multiple select example"
+                                        id="inputRole" required>
+                                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                                    <option value="ROLE_USER">ROLE_USER</option>
+                                </select>
 
                                     <div id="error-message" class="alert alert-danger my-3" style="display: none;"></div>
 

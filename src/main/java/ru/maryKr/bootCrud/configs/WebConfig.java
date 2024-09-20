@@ -3,6 +3,7 @@ package ru.maryKr.bootCrud.configs;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.resource.ResourceResolver;
@@ -33,5 +34,10 @@ public class WebConfig implements WebMvcConfigurer {
                         return chain.resolveUrlPath(resourcePath, locations);
                     }
                 });
+    }
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/index").setViewName("index");
     }
 }
